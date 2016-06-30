@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit http://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAqiULx/GME0KEZprJzFjqnAAAAAACAAAAAAADZgAAwAAAABAAAAALUeWAsXBMlyfluLl8CQQ4AAAAAASAAACgAAAAEAAAACgeNlI30250ZbQtSU99xX8gAAAAFvteNfBFZjVQkUsuaJf9uYO+7o/496wIPnO+4RBvUP8UAAAAkldyh9wUQgnhupMaODNjqMLABQ4=</EncryptedPassword>
+    <_PublishTargetUrl>ftp://WebServiceEPJ.somee.com/www.WebServiceEPJ.somee.com</_PublishTargetUrl>
+  </PropertyGroup>
+  <ItemGroup>
+    <File Include="bin/Newtonsoft.Json.dll">
+      <publishTime>06/07/2016 18:04:31</publishTime>
+    </File>
+    <File Include="bin/System.Data.SQLite.dll">
+      <publishTime>02/23/2016 16:54:56</publishTime>
+    </File>
+    <File Include="bin/System.Data.SQLite.Linq.dll">
+      <publishTime>02/23/2016 16:54:56</publishTime>
+    </File>
+    <File Include="bin/WServiceEPJ.dll">
+      <publishTime>06/13/2016 15:44:01</publishTime>
+    </File>
+    <File Include="bin/WSServiceEPJ.DataAccess.dll">
+      <publishTime>06/13/2016 12:10:43</publishTime>
+    </File>
+    <File Include="bin/WSServiceEPJ.Entity.dll">
+      <publishTime>06/10/2016 11:29:38</publishTime>
+    </File>
+    <File Include="bin/WSServiceEPJ.Logic.dll">
+      <publishTime>06/13/2016 12:10:44</publishTime>
+    </File>
+    <File Include="bin/WSServiceEPJ.Utility.dll">
+      <publishTime>06/13/2016 12:10:43</publishTime>
+    </File>
+    <File Include="PrecompiledApp.config">
+      <publishTime>06/13/2016 15:44:06</publishTime>
+    </File>
+    <File Include="Service1.svc">
+      <publishTime>05/30/2016 13:53:10</publishTime>
+    </File>
+    <File Include="Web.config">
+      <publishTime>06/10/2016 14:39:44</publishTime>
+    </File>
+  </ItemGroup>
+</Project>
