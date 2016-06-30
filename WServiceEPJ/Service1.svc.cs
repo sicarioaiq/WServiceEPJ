@@ -230,7 +230,7 @@ namespace WServiceEPJ
                             }
                             else
                             {
-                                objTMUsuario = TMUsuarioBL.Instancia.BusquedaUsuario(strUsuario, strMail);
+                                objTMUsuario = TMUsuarioBL.Instancia.Insertar(strUsuario, strPassword, strMail);
                             }
                         }
                     }

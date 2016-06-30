@@ -20,7 +20,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/23/2016 16:54:56</publishTime>
     </File>
     <File Include="bin/WServiceEPJ.dll">
-      <publishTime>06/30/2016 17:52:30</publishTime>
+      <publishTime>06/30/2016 18:11:09</publishTime>
     </File>
     <File Include="bin/WSServiceEPJ.DataAccess.dll">
       <publishTime>06/30/2016 17:52:29</publishTime>
@@ -35,7 +35,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/30/2016 17:52:28</publishTime>
     </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>06/30/2016 17:54:34</publishTime>
+      <publishTime>06/30/2016 18:11:25</publishTime>
     </File>
     <File Include="Service1.svc">
       <publishTime>05/30/2016 13:53:12</publishTime>
