@@ -18,6 +18,8 @@ namespace WSServiceEPJ.Entity
         [DataMember]
         public String strPassword { get; set; }
         [DataMember]
+        public String strMail { get; set; }
+        [DataMember]
         public int intIdPerfil { get; set; }
         [DataMember]
         public int intActivo { get; set; }

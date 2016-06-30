@@ -149,27 +149,23 @@ namespace WServiceEPJ
                                     m_dbConnection.Close();
                                 }
                             }
-                            else
-                            {
+                            else{
                                 return null;
                             }
 
                         }
-                        else
-                        {
+                        else{
                             return null;
                         }
                     }
                 }
             }
-            catch (Exception e)
-            {
+            catch (Exception e){
                 LogEvent.AlmacenarErrorLog(e, null, HostingEnvironment.MapPath("~/BD/"), true, "2da. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                 objTMUsuario.ErrorMensaje = e.Message;
                 objTMUsuario.ErrorCode = "2do. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
             }
-            finally
-            {
+            finally{
                 SQLiteConnection.ClearAllPools();
                 if (m_dbConnection != null)
                 {
@@ -198,17 +194,57 @@ namespace WServiceEPJ
                 ruta = FTPRutaDescarga + @"Escuela.sqlite";
                 objTMUsuario.strRuta = ruta;
             }
-            catch (IOException ee)
-            {
+            catch (IOException ee){
                 LogEvent.AlmacenarErrorLog(ee, null, HostingEnvironment.MapPath("~/BD/"), true, "3era. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                 objTMUsuario.ErrorMensaje = ee.Message;
             }
-            catch (Exception e)
-            {
+            catch (Exception e){
                 LogEvent.AlmacenarErrorLog(e, null, HostingEnvironment.MapPath("~/BD/"), true, "3era. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                 objTMUsuario.ErrorMensaje = e.Message;
                 objTMUsuario.ErrorCode = "3era. exception -- public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
             }
+            return objTMUsuario;
+        }
+
+       [WebInvoke(Method = "POST",
+       ResponseFormat = WebMessageFormat.Json,
+       RequestFormat = WebMessageFormat.Json,
+       BodyStyle = WebMessageBodyStyle.WrappedRequest,
+       UriTemplate = "RegistroUsuario")]
+        public TMUsuario RegistroUsuarioEPJ(String strUsuario, String strPassword, String strMail)
+        {
+            TMUsuario objTMUsuario = new TMUsuario();
+            try
+            {
+                if (!string.IsNullOrEmpty(strUsuario) && !string.IsNullOrEmpty(strPassword) && !string.IsNullOrEmpty(strMail))
+                {
+                    objTMUsuario = TMUsuarioBL.Instancia.BusquedaUsuario(strUsuario, strMail);
+                    if (objTMUsuario != null)
+                    {
+                        if (string.IsNullOrEmpty(objTMUsuario.ErrorMensaje))
+                        {
+                            if (!string.IsNullOrEmpty(objTMUsuario.strUsuario) && objTMUsuario.intId > 0)
+                            {
+                                objTMUsuario.ErrorCode = "0001";
+                                objTMUsuario.ErrorMensaje = "El Usuario y/o email ya existe";
+                            }
+                            else
+                            {
+                                objTMUsuario = TMUsuarioBL.Instancia.BusquedaUsuario(strUsuario, strMail);
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    objTMUsuario.ErrorCode = "0002";
+                    objTMUsuario.ErrorMensaje = "Debe Ingresar Usuario, Password y Correo";
+                }
+            }
+            catch (Exception ex)
+            {
+                objTMUsuario = null;
+            }           
             return objTMUsuario;
         }
 

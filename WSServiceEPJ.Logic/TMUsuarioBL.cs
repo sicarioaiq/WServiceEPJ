@@ -49,5 +49,29 @@ namespace WSServiceEPJ.Logic
                 return null;
             }
         }
+
+        public TMUsuario BusquedaUsuario(String strUsuario, String strMail)
+        {
+            try
+            {
+                return TMUsuarioDA.Instancia.BusquedaUsuario(strUsuario, strMail);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public TMUsuario Insertar(String strUsuario, String strPassword, String strMail)
+        {
+            try
+            {
+                return TMUsuarioDA.Instancia.Insertar(strUsuario, strPassword, strMail);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

@@ -73,5 +73,58 @@ namespace WSServiceEPJ.DataAccess
             }
             return lstTMUsuario;
         }
+
+        public TMUsuario BusquedaUsuario(String strUsuario, String strMail)
+        {
+            TMUsuario objTMUsuario = new TMUsuario();
+            try
+            {
+                Dictionary<string, object> parameter = new Dictionary<string, object>
+                {
+                    {"@strUsuario", strUsuario},
+                    {"@strMail", strMail}
+                };
+                using (IDataReader oReader = SqlHelper.Instance.ExecuteReader("USP_GETBYUSER_TMUSUARIO", parameter))
+                {
+                    while (oReader.Read())
+                    {
+                        objTMUsuario = ReaderUtility.MapearObjeto<TMUsuario>(oReader);
+                    }
+                }
+                objTMUsuario.ErrorMensaje = string.Empty;
+                objTMUsuario.ErrorCode = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                objTMUsuario.ErrorMensaje = ex.Message;
+                objTMUsuario.ErrorCode = "public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
+                throw;
+            }
+            return objTMUsuario;
+        }
+
+        public TMUsuario Insertar(String strUsuario, String strPassword, String strMail)
+        {
+            TMUsuario objTMUsuario = new TMUsuario();
+            try
+            {
+                Dictionary<string, object> parameter = new Dictionary<string, object>
+                {                    
+                    {"@strUsuario", strUsuario},
+                    {"@strPassword", strPassword},
+                    {"@strMail", strMail}
+                };
+                SqlHelper.Instance.ExecuteNonQuery("USP_INS_TMUSUARIO", parameter);
+                objTMUsuario.ErrorMensaje = string.Empty;
+                objTMUsuario.ErrorCode = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                objTMUsuario.ErrorMensaje = ex.Message;
+                objTMUsuario.ErrorCode = "public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
+                throw;
+            }
+            return objTMUsuario;
+        }
     }
 }
