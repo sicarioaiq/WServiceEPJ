@@ -17,6 +17,8 @@ using System.Configuration;
 using System.Reflection;
 using System.Threading;
 using WSServiceEPJ.Utility;
+using System.Net.Mail;
+using System.Security.Cryptography;
 
 
 namespace WServiceEPJ
@@ -29,6 +31,12 @@ namespace WServiceEPJ
         readonly string FTPRutaDescarga = ConfigurationManager.AppSettings["FTPRutaDescarga"];
         readonly string FTPUsername = ConfigurationManager.AppSettings["FTPUsername"];
         readonly string FTPPassword = ConfigurationManager.AppSettings["FTPPassword"];
+        readonly string GoogleSMTP = ConfigurationManager.AppSettings["GoogleSMTP"];
+        readonly string GooglePORT = ConfigurationManager.AppSettings["GooglePORT"];
+        readonly string GoogleUSER = ConfigurationManager.AppSettings["GoogleUSER"];
+        readonly string GooglePSWD = ConfigurationManager.AppSettings["GooglePSWD"];
+        readonly string GoogleSSL = ConfigurationManager.AppSettings["GoogleSSL"];
+        readonly string URLPortal = ConfigurationManager.AppSettings["URLPortal"];
         SQLiteConnection m_dbConnection = null;
         List<TMUsuario> lstTMUsuario;
         List<TMPagoMensual> lstTMPagoMensual;
@@ -127,6 +135,7 @@ namespace WServiceEPJ
                                     LogEvent.AlmacenarErrorLog(ex, null, HostingEnvironment.MapPath("~/BD/"), true, "1er. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                                     objTMUsuario.ErrorMensaje = ex.Message;
                                     objTMUsuario.ErrorCode = "1er. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
+                                    objTMUsuario.strIndicadorError = "1";
                                 }
                                 finally
                                 {
@@ -149,23 +158,28 @@ namespace WServiceEPJ
                                     m_dbConnection.Close();
                                 }
                             }
-                            else{
+                            else
+                            {
                                 return null;
                             }
 
                         }
-                        else{
+                        else
+                        {
                             return null;
                         }
                     }
                 }
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 LogEvent.AlmacenarErrorLog(e, null, HostingEnvironment.MapPath("~/BD/"), true, "2da. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                 objTMUsuario.ErrorMensaje = e.Message;
                 objTMUsuario.ErrorCode = "2do. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
+                objTMUsuario.strIndicadorError = "1";
             }
-            finally{
+            finally
+            {
                 SQLiteConnection.ClearAllPools();
                 if (m_dbConnection != null)
                 {
@@ -194,23 +208,27 @@ namespace WServiceEPJ
                 ruta = FTPRutaDescarga + @"Escuela.sqlite";
                 objTMUsuario.strRuta = ruta;
             }
-            catch (IOException ee){
+            catch (IOException ee)
+            {
                 LogEvent.AlmacenarErrorLog(ee, null, HostingEnvironment.MapPath("~/BD/"), true, "3era. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                 objTMUsuario.ErrorMensaje = ee.Message;
+                objTMUsuario.strIndicadorError = "1";
             }
-            catch (Exception e){
+            catch (Exception e)
+            {
                 LogEvent.AlmacenarErrorLog(e, null, HostingEnvironment.MapPath("~/BD/"), true, "3era. exception - public TMUsuario LoginEPJ(String strUsuario, String strPassword)", "Service1.svc.cs", "Login");
                 objTMUsuario.ErrorMensaje = e.Message;
                 objTMUsuario.ErrorCode = "3era. exception -- public TMUsuario LoginEPJ(String strUsuario, String strPassword)";
+                objTMUsuario.strIndicadorError = "1";
             }
             return objTMUsuario;
         }
 
-       [WebInvoke(Method = "POST",
-       ResponseFormat = WebMessageFormat.Json,
-       RequestFormat = WebMessageFormat.Json,
-       BodyStyle = WebMessageBodyStyle.WrappedRequest,
-       UriTemplate = "RegistroUsuario")]
+        [WebInvoke(Method = "POST",
+        ResponseFormat = WebMessageFormat.Json,
+        RequestFormat = WebMessageFormat.Json,
+        BodyStyle = WebMessageBodyStyle.WrappedRequest,
+        UriTemplate = "RegistroUsuario")]
         public TMUsuario RegistroUsuarioEPJ(String strUsuario, String strPassword, String strMail)
         {
             TMUsuario objTMUsuario = new TMUsuario();
@@ -225,18 +243,59 @@ namespace WServiceEPJ
                         {
                             if (!string.IsNullOrEmpty(objTMUsuario.strUsuario) && objTMUsuario.intId > 0)
                             {
+                                objTMUsuario.strIndicadorError = "1";
                                 objTMUsuario.ErrorCode = "0001";
                                 objTMUsuario.ErrorMensaje = "El Usuario y/o email ya existe";
                             }
                             else
                             {
-                                objTMUsuario = TMUsuarioBL.Instancia.Insertar(strUsuario, strPassword, strMail);
+                                try
+                                {
+                                    objTMUsuario = TMUsuarioBL.Instancia.Insertar(strUsuario, strPassword, strMail);
+                                    SmtpClient smtpClient = new SmtpClient();
+                                    smtpClient.Host = GoogleSMTP;
+                                    smtpClient.Port = Convert.ToInt32(GooglePORT);
+                                    smtpClient.EnableSsl = GoogleSSL == "1" ? true : false;
+                                    smtpClient.UseDefaultCredentials = false;
+                                    NetworkCredential credentials = new NetworkCredential(GoogleUSER, GooglePSWD);
+                                    smtpClient.Credentials = credentials;
+                                    MailMessage mailMessage = new MailMessage();
+                                    mailMessage.From = new MailAddress("no-reply@epj.com.pe");
+                                    mailMessage.To.Add(strMail);
+                                    var bodyPath = HostingEnvironment.MapPath("~/html/index.html");
+                                    var body = File.ReadAllText(bodyPath);
+                                    string strUser = HttpUtility.UrlEncode(Encrypt(strUsuario.Trim()));
+                                    string streMail = HttpUtility.UrlEncode(Encrypt(strMail.Trim()));
+                                    var uri = new Uri(URLPortal +"xyzab=param1&abxyz=param2");
+                                    var qs = HttpUtility.ParseQueryString(uri.Query);
+                                    qs.Set("xyzab", strUser);
+                                    qs.Set("abxyz", streMail);
+
+                                    var uriBuilder = new UriBuilder(uri);
+                                    uriBuilder.Query = qs.ToString();
+                                    var newUri = uriBuilder.Uri;
+
+                                    body = body.Replace("@usuario@", strUsuario).Replace("@mail@", strMail).Replace("@url@",newUri.ToString().Trim());
+                                    mailMessage.Subject = "no-reply - Confirmación de cuenta";
+                                    mailMessage.IsBodyHtml = true;
+                                    mailMessage.Body = body;
+
+                                    smtpClient.Send(mailMessage);
+                                }
+                                catch (Exception ex)
+                                {
+                                    objTMUsuario.strIndicadorError = "1";
+                                    objTMUsuario.ErrorCode = "00001";
+                                    objTMUsuario.ErrorMensaje = ex.Message;
+                                }
+
                             }
                         }
                     }
                 }
                 else
                 {
+                    objTMUsuario.strIndicadorError = "1";
                     objTMUsuario.ErrorCode = "0002";
                     objTMUsuario.ErrorMensaje = "Debe Ingresar Usuario, Password y Correo";
                 }
@@ -244,7 +303,24 @@ namespace WServiceEPJ
             catch (Exception ex)
             {
                 objTMUsuario = null;
-            }           
+            }
+            return objTMUsuario;
+        }
+
+        [WebInvoke(Method = "POST", 
+        BodyStyle = WebMessageBodyStyle.WrappedRequest,
+        UriTemplate = "ConfirmarUsuario")]
+        public TMUsuario ConfirmarUsuarioEPJ(String strUsuario, String strMail)
+        {
+            TMUsuario objTMUsuario = new TMUsuario();
+            try
+            {
+             
+            }
+            catch (Exception ex)
+            {
+
+            }
             return objTMUsuario;
         }
 
@@ -512,5 +588,51 @@ namespace WServiceEPJ
 
             return;
         }
+
+        private string Encrypt(string clearText)
+        {
+            string EncryptionKey = "MAKV2SPBNI99212";
+            byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(clearBytes, 0, clearBytes.Length);
+                        cs.Close();
+                    }
+                    clearText = Convert.ToBase64String(ms.ToArray());
+                }
+            }
+            return clearText;
+        }
+
+        private string Decrypt(string cipherText)
+        {
+            string EncryptionKey = "MAKV2SPBNI99212";
+            cipherText = cipherText.Replace(" ", "+");
+            byte[] cipherBytes = Convert.FromBase64String(cipherText);
+            using (Aes encryptor = Aes.Create())
+            {
+                Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(EncryptionKey, new byte[] { 0x49, 0x76, 0x61, 0x6e, 0x20, 0x4d, 0x65, 0x64, 0x76, 0x65, 0x64, 0x65, 0x76 });
+                encryptor.Key = pdb.GetBytes(32);
+                encryptor.IV = pdb.GetBytes(16);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateDecryptor(), CryptoStreamMode.Write))
+                    {
+                        cs.Write(cipherBytes, 0, cipherBytes.Length);
+                        cs.Close();
+                    }
+                    cipherText = Encoding.Unicode.GetString(ms.ToArray());
+                }
+            }
+            return cipherText;
+        }
+
     }
 }

@@ -71,6 +71,8 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="html\index.html" />
+    <Content Include="html\logo.jpeg" />
     <Content Include="Service1.svc" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

@@ -15,6 +15,7 @@ namespace WSServiceEPJ.Entity
         String _errorCode;
         String _errorMensaje;
         String _contadorLista;
+        String _strIndicadorError;
        
         [DataMember]
         public String ErrorMensaje
@@ -34,6 +35,12 @@ namespace WSServiceEPJ.Entity
         {
             get { return _contadorLista; }
             set { _contadorLista = value; }
-        }      
+        }
+        [DataMember]
+        public String strIndicadorError
+        {
+            get { return _strIndicadorError; }
+            set { _strIndicadorError = value; }
+        }
     }
 }

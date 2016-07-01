@@ -27,6 +27,9 @@ namespace WServiceEPJ
         [OperationContract]
         TMUsuario RegistroUsuarioEPJ(String strUsuario, String strPassword, String strMail);
 
+        [OperationContract]
+        TMUsuario ConfirmarUsuarioEPJ(String strUsuario, String strMail);
+
         // TODO: Add your service operations here
     }
 

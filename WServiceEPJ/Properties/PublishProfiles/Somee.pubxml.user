@@ -20,28 +20,34 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/23/2016 16:54:56</publishTime>
     </File>
     <File Include="bin/WServiceEPJ.dll">
-      <publishTime>06/30/2016 18:11:09</publishTime>
+      <publishTime>07/01/2016 15:33:38</publishTime>
     </File>
     <File Include="bin/WSServiceEPJ.DataAccess.dll">
-      <publishTime>06/30/2016 17:52:29</publishTime>
+      <publishTime>07/01/2016 10:00:22</publishTime>
     </File>
     <File Include="bin/WSServiceEPJ.Entity.dll">
-      <publishTime>06/30/2016 17:52:28</publishTime>
+      <publishTime>07/01/2016 10:00:22</publishTime>
     </File>
     <File Include="bin/WSServiceEPJ.Logic.dll">
-      <publishTime>06/30/2016 17:52:29</publishTime>
+      <publishTime>07/01/2016 10:00:23</publishTime>
     </File>
     <File Include="bin/WSServiceEPJ.Utility.dll">
       <publishTime>06/30/2016 17:52:28</publishTime>
     </File>
+    <File Include="html/index.html">
+      <publishTime>07/01/2016 15:37:37</publishTime>
+    </File>
+    <File Include="html/logo.jpeg">
+      <publishTime>07/01/2016 14:38:48</publishTime>
+    </File>
     <File Include="PrecompiledApp.config">
-      <publishTime>06/30/2016 18:11:25</publishTime>
+      <publishTime>07/01/2016 15:37:52</publishTime>
     </File>
     <File Include="Service1.svc">
       <publishTime>05/30/2016 13:53:12</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>06/30/2016 17:54:32</publishTime>
+      <publishTime>07/01/2016 15:12:54</publishTime>
     </File>
   </ItemGroup>
 </Project>
