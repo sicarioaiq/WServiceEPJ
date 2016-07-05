@@ -257,15 +257,20 @@ namespace WServiceEPJ
                                     smtpClient.Port = Convert.ToInt32(GooglePORT);
                                     smtpClient.EnableSsl = GoogleSSL == "1" ? true : false;
                                     smtpClient.UseDefaultCredentials = false;
-                                    NetworkCredential credentials = new NetworkCredential(GoogleUSER, GooglePSWD);
+                                    string strUsuarioGoogle = string.Empty;
+                                    string strPasswordGoogle = string.Empty;
+                                    strUsuarioGoogle = Decrypt(GoogleUSER.Trim());
+                                    strPasswordGoogle = Decrypt(GooglePSWD.Trim());
+                                    NetworkCredential credentials = new NetworkCredential(strUsuarioGoogle, strPasswordGoogle);
                                     smtpClient.Credentials = credentials;
                                     MailMessage mailMessage = new MailMessage();
                                     mailMessage.From = new MailAddress("no-reply@epj.com.pe");
                                     mailMessage.To.Add(strMail);
                                     var bodyPath = HostingEnvironment.MapPath("~/html/index.html");
                                     var body = File.ReadAllText(bodyPath);
-                                    string strUser = HttpUtility.UrlEncode(Encrypt(strUsuario.Trim()));
-                                    string streMail = HttpUtility.UrlEncode(Encrypt(strMail.Trim()));
+                                    string strUser = Encrypt(strUsuario.Trim());
+                                    string streMail = Encrypt(strMail.Trim());
+                                  
                                     var uri = new Uri(URLPortal +"xyzab=param1&abxyz=param2");
                                     var qs = HttpUtility.ParseQueryString(uri.Query);
                                     qs.Set("xyzab", strUser);
@@ -288,7 +293,6 @@ namespace WServiceEPJ
                                     objTMUsuario.ErrorCode = "00001";
                                     objTMUsuario.ErrorMensaje = ex.Message;
                                 }
-
                             }
                         }
                     }
