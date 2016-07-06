@@ -126,5 +126,28 @@ namespace WSServiceEPJ.DataAccess
             }
             return objTMUsuario;
         }
+
+        public TMUsuario ConfirmarCuenta(String strUsuario, String strMail)
+        {
+            TMUsuario objTMUsuario = new TMUsuario();
+            try
+            {
+                Dictionary<string, object> parameter = new Dictionary<string, object>
+                {                    
+                    {"@strUsuario", strUsuario},
+                    {"@strMail", strMail}
+                };
+                SqlHelper.Instance.ExecuteNonQuery("USP_UPD_TMUSUARIO", parameter);
+                objTMUsuario.ErrorMensaje = string.Empty;
+                objTMUsuario.ErrorCode = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                objTMUsuario.ErrorMensaje = ex.Message;
+                objTMUsuario.ErrorCode = "public TMUsuario ConfirmarCuenta(String strUsuario, String strPassword)";
+                throw;
+            }
+            return objTMUsuario;
+        }
     }
 }
