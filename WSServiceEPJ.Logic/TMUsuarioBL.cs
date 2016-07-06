@@ -73,5 +73,17 @@ namespace WSServiceEPJ.Logic
                 return null;
             }
         }
+
+        public TMUsuario ConfirmarCuenta(String strUsuario, String strMail)
+        {
+            try
+            {
+                return TMUsuarioDA.Instancia.ConfirmarCuenta(strUsuario, strMail);
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

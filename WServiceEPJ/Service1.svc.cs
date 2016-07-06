@@ -36,7 +36,8 @@ namespace WServiceEPJ
         readonly string GoogleUSER = ConfigurationManager.AppSettings["GoogleUSER"];
         readonly string GooglePSWD = ConfigurationManager.AppSettings["GooglePSWD"];
         readonly string GoogleSSL = ConfigurationManager.AppSettings["GoogleSSL"];
-        readonly string URLPortal = ConfigurationManager.AppSettings["URLPortal"];
+        readonly string URLPortalConfirmar = ConfigurationManager.AppSettings["URLPortalConfirmar"];
+        readonly string URLPortalServicioConfirmar = ConfigurationManager.AppSettings["URLPortalServicioConfirmar"];
         SQLiteConnection m_dbConnection = null;
         List<TMUsuario> lstTMUsuario;
         List<TMPagoMensual> lstTMPagoMensual;
@@ -270,17 +271,19 @@ namespace WServiceEPJ
                                     var body = File.ReadAllText(bodyPath);
                                     string strUser = Encrypt(strUsuario.Trim());
                                     string streMail = Encrypt(strMail.Trim());
-                                  
-                                    var uri = new Uri(URLPortal +"xyzab=param1&abxyz=param2");
+                                    string strUrlService = Decrypt(URLPortalServicioConfirmar.Trim());
+
+                                    var uri = new Uri(URLPortalConfirmar);
                                     var qs = HttpUtility.ParseQueryString(uri.Query);
                                     qs.Set("xyzab", strUser);
                                     qs.Set("abxyz", streMail);
+                                    qs.Set("qwert", URLPortalServicioConfirmar.Trim());
 
                                     var uriBuilder = new UriBuilder(uri);
                                     uriBuilder.Query = qs.ToString();
                                     var newUri = uriBuilder.Uri;
 
-                                    body = body.Replace("@usuario@", strUsuario).Replace("@mail@", strMail).Replace("@url@",newUri.ToString().Trim());
+                                    body = body.Replace("@usuario@", strUsuario).Replace("@mail@", strMail).Replace("@url@", newUri.ToString().Trim());
                                     mailMessage.Subject = "no-reply - Confirmación de cuenta";
                                     mailMessage.IsBodyHtml = true;
                                     mailMessage.Body = body;
@@ -319,7 +322,7 @@ namespace WServiceEPJ
             TMUsuario objTMUsuario = new TMUsuario();
             try
             {
-             
+                objTMUsuario = TMUsuarioBL.Instancia.ConfirmarCuenta(strUsuario, strMail);
             }
             catch (Exception ex)
             {
